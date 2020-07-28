@@ -1,0 +1,16 @@
+{
+  "name": "resource-label-service",
+  "version": "0.0.0",
+  "main": "app.js",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lblod/resource-label-service.git"
+  },
+  "author": "redpencil.io",
+  "license": "MIT",
+  "dependencies": {
+    "@lblod/mu-auth-sudo": "^0.2.0",
+    "body-parser": "^1.19.0"
+  }
+}
