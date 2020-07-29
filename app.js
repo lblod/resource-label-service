@@ -1,4 +1,4 @@
-import { app, errorHandler, sparqlEscapeUri } from 'mu';
+import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString } from 'mu';
 import { querySudo as query } from '@lblod/mu-auth-sudo';
 
 import bodyParser from 'body-parser';
@@ -12,13 +12,15 @@ app.post('/getInfo', async (req, res) => {
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?label ?comment WHERE {
       ${sparqlEscapeUri(term)} rdfs:label ?label;
-        rdfs:comment ?comment
+        rdfs:comment ?comment.
+      FILTER (lang(?label) = ${sparqlEscapeString(language)})
+      FILTER (lang(?comment) = ${sparqlEscapeString(language)})
     }
   `);
   const info = queryResult.results.bindings[0];
   res.json({
-    label: info.label.value,
-    comment: info.comment.value
+    label: info.label ? info.label.value : '',
+    comment: info.comment ? info.comment.value : '',
   });
 });
 
