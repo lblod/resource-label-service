@@ -11,10 +11,14 @@ app.post('/getInfo', async (req, res) => {
   const queryResult = await query(`
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?label ?comment WHERE {
-      ${sparqlEscapeUri(term)} rdfs:label ?label;
-        rdfs:comment ?comment.
+
+      ${sparqlEscapeUri(term)} rdfs:label ?label.
       FILTER (lang(?label) = ${sparqlEscapeString(language)})
-      FILTER (lang(?comment) = ${sparqlEscapeString(language)})
+
+      OPTIONAL {
+        ${sparqlEscapeUri(term)} rdfs:comment ?comment.
+        FILTER (lang(?comment) = ${sparqlEscapeString(language)})
+      }
     }
   `);
   const info = queryResult.results.bindings[0];
