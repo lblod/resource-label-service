@@ -30,14 +30,14 @@ app.post('/getInfo', async (req, res) => {
   `);
   const info = queryResult.results.bindings[0];
   if(!info) {
-    return res.json({error: 'No info in the db'})
+    return res.json({error: 'No info in the db'});
   }
   const infoFormatted = {
     label: info.label ? info.label.value : '',
     comment: info.comment ? info.comment.value : '',
-  }
+  };
   if(!cache[term]) {
-    cache[term] = {}
+    cache[term] = {};
     cache[term][language] = infoFormatted;
   } else {
     cache[term][language] = infoFormatted;
