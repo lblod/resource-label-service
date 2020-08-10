@@ -45,8 +45,5 @@ app.post('/getInfo', async (req, res) => {
   res.json(infoFormatted);
 });
 
-app.get('/test', async (req, res) => {
-  res.send('Hello World');
-});
 
 app.use(errorHandler);
