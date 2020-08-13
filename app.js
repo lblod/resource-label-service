@@ -10,8 +10,8 @@ const cache = {
 // parse application/json
 app.use(bodyParser.json());
 
-app.post('/getInfo', async (req, res) => {
-  const {term, language = 'nl'} = req.body;
+app.get('/getInfo', async (req, res) => {
+  const {term, language = 'nl'} = req.query;
   if(cache[term] && cache[term][language]) {
     return res.json(cache[term][language]);
   }
@@ -42,8 +42,10 @@ app.post('/getInfo', async (req, res) => {
   } else {
     cache[term][language] = infoFormatted;
   }
+  
+  res.setHeader('MU_AUTH_CACHE_KEYS', JSON.stringify([{"name": "getInfo", parameters:[]}]));
   res.json(infoFormatted);
 });
-
+ 
 
 app.use(errorHandler);
