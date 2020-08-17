@@ -8,6 +8,7 @@ Response example:
   "label": "Zitting",
   "comment": "Een geformaliseerde samenkomst van de leden van een bestuursorgaan met het doel om de aangelegenheden te regelen waarvoor het bevoegd is."
 }
+```
 
 ## Getting started 
 _Getting started with resource labels service_
@@ -80,4 +81,14 @@ match "/resource-labels/*path" do
   Proxy.forward conn, path, "http://label-cache/"
 end
 ```
+
+## API
+
+_Provided application interface_
+
+### Endpoints
+
+#### `/info`
+  - method: `GET`
+  - 
 
