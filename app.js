@@ -1,6 +1,6 @@
 import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query } from 'mu';
 
-app.get('/getInfo', async (req, res) => {
+app.get('/info', async (req, res) => {
   const {term, language = 'nl'} = req.query;
   if(!term) {
     return res.json({error: 'No term specified'});
