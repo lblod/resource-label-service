@@ -19,7 +19,7 @@ The service needs to be embedded in your docker-compose.yml file like this
 
 ```
 resource-labels:
-  image: lblod/resource-label-service:0.0.2
+  image: lblod/resource-label-service:0.0.3
   restart: always
   logging: *default-logging
   labels:
@@ -89,6 +89,21 @@ _Provided application interface_
 ### Endpoints
 
 #### `/info`
-  - method: `GET`
-  - 
+
+- method: `GET`
+- parameters:
+  - term: The uri you want to obtain the info from.
+  - language: The language you want to get the information in. The default language is `nl`
+- response: The response will have 2 main attributes:
+  - label: The label correspondent to the uri sent in the url. Is the property `rdfs:label` in the triplestore
+  - comment: The comment explaining the uri sent in the url. Correspond to the property `rdfs:comment` in the triplestore.
+- Examples:
+  - Example of request: `http://localhost:4200/resource-labels/info?term=http%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fbesluit%23Zitting&language=en`
+  - Example of response: `{
+      "label": "Zitting",
+      "comment": "Een geformaliseerde samenkomst van de leden van een bestuursorgaan met het doel om de aangelegenheden te regelen waarvoor het bevoegd is."
+    }`
+- Errors: The service can return the following errors:
+  - `{error: 'No term specified'}`: This means the service cannot find the term in the url, you should check the syntax of your request
+  - `{error: 'No info in the db'}`: This means that the service cannot find information about the term in the triplestore. Double check that the information is present in the queried language.
 
