@@ -5,7 +5,6 @@ app.get('/getInfo', async (req, res) => {
   if(!term) {
     return res.json({error: 'No term specified'});
   }
-  console.log(term)
   const queryResult = await query(`
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?label ?comment WHERE {
