@@ -1,6 +1,13 @@
 # resource labels service
-This image provides an endpoint for retrieving information about a specific uri.
+This image provides an endpoint for retrieving information about a specific URI.
 It exposes the GET endpoint `/info` that accepts a `term` and a `language` parameters, this endpoint returns a json object with the `label` and the `comment` associated with the specified term in the language selected.
+
+Response example:
+```
+{
+  "label": "Zitting",
+  "comment": "Een geformaliseerde samenkomst van de leden van een bestuursorgaan met het doel om de aangelegenheden te regelen waarvoor het bevoegd is."
+}
 
 ## Getting started 
 _Getting started with resource labels service_
@@ -34,9 +41,10 @@ With this configuration we will be able to send a GET request to `/resource-labe
 
 ### DB information
 
-For this service to work we need to have the data we want about the uris in our database, this microservice reads the properties `rdfs:label` and `rdfs:comment` of the uris specified, `rdfs` being `<http://www.w3.org/2000/01/rdf-schema#>`.
+For this service to work we need to have the data we want about the uris in our triplestore, this microservice reads the properties `rdfs:label` and `rdfs:comment` of the uris specified, `rdfs` being `<http://www.w3.org/2000/01/rdf-schema#>`.
 The information must also be on the language the user queries, by default the language queried is `nl`.
-An example of a term in the database is
+An example of a term in the triplestore is
+
 ```
 <http://data.vlaanderen.be/ns/mandaat#Fractie> a owl:Class ;
   rdfs:label "Parliamentary Group"@en,
