@@ -7,7 +7,7 @@ app.get('/info', async (req, res) => {
       id: 'no-term-specified',
       title: 'No term specified',
       detail: 'The service cannot find the term in the url, you should check the syntax of your request',
-      code: '400'
+      status: '400'
     });
     res.status(400);
     return res.json(jsonApiError);
@@ -29,7 +29,7 @@ app.get('/info', async (req, res) => {
       id: 'no-info',
       title: 'No info found in the db',
       detail: 'The service cannot find information about the term in the triplestore. Double check that the information is present in the queried language',
-      code: '404'
+      status: '404'
     });
     res.status(404);
     return res.json(jsonApiError);
