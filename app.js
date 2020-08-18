@@ -6,7 +6,7 @@ app.get('/info', async (req, res) => {
     const jsonApiError = generateJsonApiError({
       id: 'no-term-specified',
       title: 'No term specified',
-      detail: 'The service cannot find the term in the url, you should check the syntax of your request',
+      detail: 'The service cannot find the term in the url, you should check the syntax of your request.',
       status: '400'
     });
     res.status(400);
@@ -28,7 +28,7 @@ app.get('/info', async (req, res) => {
     const jsonApiError = generateJsonApiError({
       id: 'no-info',
       title: 'No info found in the db',
-      detail: 'The service cannot find information about the term in the triplestore. Double check that the information is present in the queried language',
+      detail: `The service cannot find information about the term '${term}' and language '${language}' in the triplestore. Double check that the information is present in the queried language.`,
       status: '404'
     });
     res.status(404);
