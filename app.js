@@ -3,7 +3,14 @@ import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query } from 'm
 app.get('/info', async (req, res) => {
   const {term, language = 'nl'} = req.query;
   if(!term) {
-    return res.json({error: 'No term specified'});
+    const jsonApiError = generateJsonApiError({
+      id: 'no-term-specified',
+      title: 'No term specified',
+      detail: 'The service cannot find the term in the url, you should check the syntax of your request',
+      code: '400'
+    });
+    res.status(400);
+    return res.json(jsonApiError);
   }
   const queryResult = await query(`
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -18,15 +25,45 @@ app.get('/info', async (req, res) => {
   `);
   const info = queryResult.results.bindings[0];
   if(!info) {
-    return res.json({error: 'No info in the db'});
+    const jsonApiError = generateJsonApiError({
+      id: 'no-info',
+      title: 'No info found in the db',
+      detail: 'The service cannot find information about the term in the triplestore. Double check that the information is present in the queried language',
+      code: '404'
+    });
+    res.status(404);
+    return res.json(jsonApiError);
   }
-  const infoFormatted = {
-    label: info.label ? info.label.value : '',
-    comment: info.comment ? info.comment.value : '',
-  };
+  const label = info.label ? info.label.value : '';
+  const comment = info.comment ? info.comment.value : '';
+  const jsonApiResponse = generateJsonApiResponse(term, label, comment)
   res.setHeader('MU_AUTH_CACHE_KEYS', JSON.stringify([{"name": "getInfo", parameters:[]}]));
-  res.json(infoFormatted);
+  res.json(jsonApiResponse);
 });
+
+function generateJsonApiResponse(term, label, comment) {
+  return {
+    type: "uri",
+    id: term,
+    attributes: {
+      label,
+      comment,
+    }
+  };
+}
+
+function generateJsonApiError({id, status, title, detail}) {
+  return {
+    errors: [
+      {
+        id,
+        status,
+        title,
+        detail
+      }
+    ] 
+  }
+}
 
 
 
