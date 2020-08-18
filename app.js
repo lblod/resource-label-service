@@ -1,10 +1,10 @@
-import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query } from 'mu';
+import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query, uuid } from 'mu';
 
 app.get('/info', async (req, res) => {
   const {term, language = 'nl'} = req.query;
   if(!term) {
     const jsonApiError = generateJsonApiError({
-      id: 'no-term-specified',
+      code: 'no-term-specified',
       title: 'No term specified',
       detail: 'The service cannot find the term in the url, you should check the syntax of your request.',
       status: '400'
@@ -26,7 +26,7 @@ app.get('/info', async (req, res) => {
   const info = queryResult.results.bindings[0];
   if(!info) {
     const jsonApiError = generateJsonApiError({
-      id: 'no-info',
+      code: 'no-info',
       title: 'No info found in the db',
       detail: `The service cannot find information about the term '${term}' and language '${language}' in the triplestore. Double check that the information is present in the queried language.`,
       status: '404'
@@ -52,11 +52,13 @@ function generateJsonApiResponse(term, label, comment) {
   };
 }
 
-function generateJsonApiError({id, status, title, detail}) {
+function generateJsonApiError({code, status, title, detail}) {
+  const id = uuid();
   return {
     errors: [
       {
         id,
+        code,
         status,
         title,
         detail
