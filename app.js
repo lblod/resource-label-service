@@ -7,11 +7,12 @@ app.get('/info', async (req, res) => {
   }
   const queryResult = await query(`
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT ?label ?comment WHERE {
-      ${sparqlEscapeUri(term)} rdfs:label ?label.
+      ${sparqlEscapeUri(term)} (rdfs:label|skos:prefLabel) ?label.
       FILTER (lang(?label) = ${sparqlEscapeString(language)})
       OPTIONAL {
-        ${sparqlEscapeUri(term)} rdfs:comment ?comment.
+        ${sparqlEscapeUri(term)} (rdfs:comment|skos:definition) ?comment.
         FILTER (lang(?comment) = ${sparqlEscapeString(language)})
       }
     }
