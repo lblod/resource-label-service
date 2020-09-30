@@ -1,10 +1,19 @@
-import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query } from 'mu';
+import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query, uuid } from 'mu';
 
 app.get('/info', async (req, res) => {
   const {term, language = 'nl'} = req.query;
+
   if(!term) {
-    return res.json({error: 'No term specified'});
+    const jsonApiError = generateJsonApiError({
+      code: 'no-term-specified',
+      title: 'No term specified',
+      detail: 'The service cannot find the term in the url, you should check the syntax of your request.',
+      status: '400'
+    });
+    res.status(400);
+    return res.json(jsonApiError);
   }
+
   const queryResult = await query(`
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -17,18 +26,52 @@ app.get('/info', async (req, res) => {
       }
     }
   `);
+
   const info = queryResult.results.bindings[0];
+
   if(!info) {
-    return res.json({error: 'No info in the db'});
+    const jsonApiError = generateJsonApiError({
+      code: 'no-info',
+      title: 'No info found in the db',
+      detail: `The service cannot find information about the term '${term}' and language '${language}' in the triplestore. Double check that the information is present in the queried language.`,
+      status: '404'
+    });
+    res.status(404);
+    return res.json(jsonApiError);
   }
-  const infoFormatted = {
-    label: info.label ? info.label.value : '',
-    comment: info.comment ? info.comment.value : '',
-  };
+
+  const label = info.label ? info.label.value : '';
+  const comment = info.comment ? info.comment.value : '';
+  const jsonApiResponse = generateJsonApiResponse(term, label, comment);
   res.setHeader('MU_AUTH_CACHE_KEYS', JSON.stringify([{"name": "getInfo", parameters:[]}]));
-  res.json(infoFormatted);
+  return res.json(jsonApiResponse);
+
 });
 
+function generateJsonApiResponse(term, label, comment) {
+  return {
+    type: "uri",
+    id: term,
+    attributes: {
+      label,
+      comment
+    }
+  };
+}
 
+function generateJsonApiError({code, status, title, detail}) {
+  const id = uuid();
+  return {
+    errors: [
+      {
+        id,
+        code,
+        status,
+        title,
+        detail
+      }
+    ]
+  };
+}
 
 app.use(errorHandler);

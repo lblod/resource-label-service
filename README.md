@@ -1,12 +1,16 @@
 # resource labels service
 This image provides an endpoint for retrieving information about a specific URI.
-It exposes the GET endpoint `/info` that accepts a `term` and a `language` parameters, this endpoint returns a json object with the `label` and the `comment` associated with the specified term in the language selected.
+It exposes the GET endpoint `/info` that accepts a `term` and a `language` parameters, this endpoint returns a json:api compliant object with the `label` and the `comment` associated with the specified term in the language selected.
 
 Response example:
 ```
 {
-  "label": "Zitting",
-  "comment": "Een geformaliseerde samenkomst van de leden van een bestuursorgaan met het doel om de aangelegenheden te regelen waarvoor het bevoegd is."
+    "type": "uri",
+    "id": "http://data.vlaanderen.be/ns/besluit#Zitting",
+    "attributes": {
+        "label": "Zitting",
+        "comment": "Een geformaliseerde samenkomst van de leden van een bestuursorgaan met het doel om de aangelegenheden te regelen waarvoor het bevoegd is."
+    }
 }
 ```
 
@@ -94,16 +98,20 @@ _Provided application interface_
 - parameters:
   - term: The uri you want to obtain the info from.
   - language: The language you want to get the information in. The default language is `nl`
-- response: The response will have 2 main attributes:
+- response: The response is json:api compliant and will have 2 main attributes:
   - label: The label correspondent to the uri sent in the url. Is the property `rdfs:label` in the triplestore
   - comment: The comment explaining the uri sent in the url. Correspond to the property `rdfs:comment` in the triplestore.
 - Examples:
   - Example of request: `http://localhost:4200/resource-labels/info?term=http%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fbesluit%23Zitting&language=en`
   - Example of response: `{
-      "label": "Zitting",
-      "comment": "Een geformaliseerde samenkomst van de leden van een bestuursorgaan met het doel om de aangelegenheden te regelen waarvoor het bevoegd is."
-    }`
-- Errors: The service can return the following errors:
-  - `{error: 'No term specified'}`: This means the service cannot find the term in the url, you should check the syntax of your request
-  - `{error: 'No info in the db'}`: This means that the service cannot find information about the term in the triplestore. Double check that the information is present in the queried language.
+    "type": "uri",
+    "id": "http://data.vlaanderen.be/ns/besluit#Zitting",
+    "attributes": {
+        "label": "Zitting",
+        "comment": "Een geformaliseerde samenkomst van de leden van een bestuursorgaan met het doel om de aangelegenheden te regelen waarvoor het bevoegd is."
+    }
+}`
+- Errors: The service can return the following error codes:
+  - `no-term`: This means the service cannot find the term in the url, you should check the syntax of your request
+  - `no-info`: This means that the service cannot find information about the term in the triplestore. Double check that the information is present in the queried language.
 
