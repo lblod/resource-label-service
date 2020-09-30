@@ -36,9 +36,9 @@ app.get('/info', async (req, res) => {
   }
   const label = info.label ? info.label.value : '';
   const comment = info.comment ? info.comment.value : '';
-  const jsonApiResponse = generateJsonApiResponse(term, label, comment)
+  const jsonApiResponse = generateJsonApiResponse(term, label, comment);
   res.setHeader('MU_AUTH_CACHE_KEYS', JSON.stringify([{"name": "getInfo", parameters:[]}]));
-  res.json(jsonApiResponse);
+  return res.json(jsonApiResponse);
 });
 
 function generateJsonApiResponse(term, label, comment) {
@@ -47,7 +47,7 @@ function generateJsonApiResponse(term, label, comment) {
     id: term,
     attributes: {
       label,
-      comment,
+      comment
     }
   };
 }
@@ -63,10 +63,8 @@ function generateJsonApiError({code, status, title, detail}) {
         title,
         detail
       }
-    ] 
-  }
+    ]
+  };
 }
-
-
 
 app.use(errorHandler);
