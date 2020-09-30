@@ -2,6 +2,7 @@ import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query, uuid } f
 
 app.get('/info', async (req, res) => {
   const {term, language = 'nl'} = req.query;
+
   if(!term) {
     const jsonApiError = generateJsonApiError({
       code: 'no-term-specified',
@@ -12,6 +13,7 @@ app.get('/info', async (req, res) => {
     res.status(400);
     return res.json(jsonApiError);
   }
+
   const queryResult = await query(`
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?label ?comment WHERE {
@@ -23,7 +25,9 @@ app.get('/info', async (req, res) => {
       }
     }
   `);
+
   const info = queryResult.results.bindings[0];
+
   if(!info) {
     const jsonApiError = generateJsonApiError({
       code: 'no-info',
@@ -34,11 +38,13 @@ app.get('/info', async (req, res) => {
     res.status(404);
     return res.json(jsonApiError);
   }
+
   const label = info.label ? info.label.value : '';
   const comment = info.comment ? info.comment.value : '';
   const jsonApiResponse = generateJsonApiResponse(term, label, comment);
   res.setHeader('MU_AUTH_CACHE_KEYS', JSON.stringify([{"name": "getInfo", parameters:[]}]));
   return res.json(jsonApiResponse);
+
 });
 
 function generateJsonApiResponse(term, label, comment) {
