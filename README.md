@@ -97,7 +97,7 @@ _Provided application interface_
 - method: `GET`
 - parameters:
   - term: The uri you want to obtain the info from.
-  - language: The language you want to get the information in. The default language is `nl`
+  - language: The language you want to get the information in. The default language is `nl`. If you specify ``nil` information won't be filtered on language, if not provided in the query.
 - response: The response is json:api compliant and will have 2 main attributes:
   - label: The label correspondent to the uri sent in the url. Is the property `rdfs:label` in the triplestore
   - comment: The comment explaining the uri sent in the url. Correspond to the property `rdfs:comment` in the triplestore.
