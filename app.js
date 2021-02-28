@@ -25,8 +25,7 @@ app.get('/info', async (req, res) => {
       detail: 'The service cannot find the term in the url, you should check the syntax of your request.',
       status: '400'
     });
-    res.status(400);
-    return res.json(jsonApiError);
+    return res.status(400).json(jsonApiError);
   }
 
   let languageFilterLabel = language ? `FILTER (lang(?label) = ${sparqlEscapeString(language)})` : '';
@@ -48,14 +47,7 @@ app.get('/info', async (req, res) => {
   const info = queryResult.results.bindings[0];
 
   if(!info) {
-    const jsonApiError = generateJsonApiError({
-      code: 'no-info',
-      title: 'No info found in the db',
-      detail: `The service cannot find information about the term '${term}' and language '${language}' in the triplestore. Double check that the information is present in the queried language.`,
-      status: '404'
-    });
-    res.status(404);
-    return res.json(jsonApiError);
+    return res.status(200).json({ data: null });
   }
 
   const label = info.label ? info.label.value : '';
@@ -68,11 +60,13 @@ app.get('/info', async (req, res) => {
 
 function generateJsonApiResponse(term, label, comment) {
   return {
-    type: "uri",
-    id: term,
-    attributes: {
-      label,
-      comment
+    data: {
+      type: "uri",
+      id: term,
+      attributes: {
+        label,
+        comment
+      }
     }
   };
 }
