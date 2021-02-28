@@ -23,7 +23,7 @@ The service needs to be embedded in your docker-compose.yml file like this
 
 ```
 resource-labels:
-  image: lblod/resource-label-service:0.2.0
+  image: lblod/resource-label-service:0.3.0
   restart: always
   logging: *default-logging
   labels:
