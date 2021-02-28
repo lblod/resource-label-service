@@ -14,7 +14,7 @@ Response example:
 }
 ```
 
-## Getting started 
+## Getting started
 _Getting started with resource labels service_
 
 ### Embedded in your project
@@ -23,7 +23,7 @@ The service needs to be embedded in your docker-compose.yml file like this
 
 ```
 resource-labels:
-  image: lblod/resource-label-service:0.0.3
+  image: lblod/resource-label-service:0.2.0
   restart: always
   logging: *default-logging
   labels:
@@ -37,7 +37,7 @@ Keep in mind that this README file can be outdated and the last version of the m
 For the service to work you need to expose the GET endpoint, for this we will need to add the following snippet to our dispatcher file
 
 ```
-match "/resource-labels/*path" do
+get "/resource-labels/*path" do
   Proxy.forward conn, path, "http://resource-labels/"
 end
 ```
@@ -64,8 +64,8 @@ An example of a term in the triplestore is
 
 _Specific guides how to apply this container_
 
-### Adding mu-cache 
-This service fully supports mu-cache out of the box, you just need to add the cache container to your docker-compose file and link it to this service:
+### Adding mu-cache
+This service supports mu-cache for the retrieval of labels. You just need to add the cache container to your docker-compose file and link this service as `backend`:
 
 ```
 label-cache:
@@ -78,13 +78,15 @@ label-cache:
     - "logging=true"
 ```
 
-Then redirect the dispatcher route to the cache instead of the service:
+Update the dispatcher config to redirect to the cache instead of this service directly:
 
 ```
-match "/resource-labels/*path" do
+get "/resource-labels/*path" do
   Proxy.forward conn, path, "http://label-cache/"
 end
 ```
+
+Cache updating is not (yet) implemented. Hence, if labels change in the database, the `label-cache`  service must be restarted manually.
 
 ## API
 
@@ -114,4 +116,3 @@ _Provided application interface_
 - Errors: The service can return the following error codes:
   - `no-term`: This means the service cannot find the term in the url, you should check the syntax of your request
   - `no-info`: This means that the service cannot find information about the term in the triplestore. Double check that the information is present in the queried language.
-
