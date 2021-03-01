@@ -46,15 +46,15 @@ app.get('/info', async (req, res) => {
 
   const info = queryResult.results.bindings[0];
 
-  if(!info) {
+  res.set('cache-keys', JSON.stringify([{"name": "resource-labels", parameters:[]}]));
+  if (!info) {
     return res.status(200).json({ data: null });
+  } else {
+    const label = info.label ? info.label.value : '';
+    const comment = info.comment ? info.comment.value : '';
+    const jsonApiResponse = generateJsonApiResponse(term, label, comment);
+    return res.status(200).json(jsonApiResponse);
   }
-
-  const label = info.label ? info.label.value : '';
-  const comment = info.comment ? info.comment.value : '';
-  const jsonApiResponse = generateJsonApiResponse(term, label, comment);
-  res.setHeader('MU_AUTH_CACHE_KEYS', JSON.stringify([{"name": "getInfo", parameters:[]}]));
-  return res.json(jsonApiResponse);
 
 });
 
