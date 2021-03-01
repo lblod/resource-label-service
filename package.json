@@ -1,6 +1,6 @@
 {
   "name": "resource-label-service",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "Microservice which provides an endpoint for retrieving human-readable information about an URI (e.g. skos:label and skos:comment)",
   "main": "app.js",
   "dependencies": {},
