@@ -59,14 +59,14 @@ An example TTL to add information about URI `http://data.vlaanderen.be/ns/mandaa
       "Een fractie is een deel van een rechtstreeks verkozen volksvertegenwoordigend orgaan waarvan de leden op inhoudelijk en logistiek vlak willen samenwerken. Het formeel kader bepaalt wie samen een fractie kan vormen, doorgaans bestaat ze uit volksvertegenwoordigers die tot dezelfde politieke partij of stroming behoren."@nl .
 ```
 
-### Reference
-#### API
-##### GET `/info`
+## Reference
+### API
+#### GET `/info`
 Returns a label and comment for the given URI in a JSON:API compliant response.
 
 **Query parameters**
-- term: URI to obtain data from (required)
-- language: language of the information. Defaults to `nl`. Specify `nil` to not filter on language.
+- **term**: URI to obtain data from (required)
+- **language**: language of the information. Defaults to `nl`. Specify `nil` to not filter on language.
 
 **Example response**
 ```json
@@ -82,7 +82,7 @@ Returns a label and comment for the given URI in a JSON:API compliant response.
 }
 ```
 
-#### Data model
+### Data model
 For this service to return data, information about the URIs need to be added to the triplestore.
 
 The service currently reads the following properties:
@@ -95,6 +95,6 @@ The service currently reads the following properties:
 
 A language tag may be added to the values. By default, the information is queried with language `nl`.
 
-#### Configuration
+### Configuration
 The following environment variables can be set to configure the service:
 - **DEFAULT_LANGUAGE**: default language to use to query information. Defaults to `nl`. Set to `nil` to disable filtering on language.
