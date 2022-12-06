@@ -8,7 +8,7 @@ Add the following snippet to your `docker-compose.yml`:
 
 ```yaml
 resource-labels:
-  image: lblod/resource-label-service:0.3.1
+  image: lblod/resource-label-service:0.3.2
 ```
 
 For the service to work you need to expose the GET endpoint in the dispatcher service. Add the following snippet to the dispatcher rules in `./config/dispatcher/dispatcher.ex`:
