@@ -1,6 +1,5 @@
 import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query, uuid } from 'mu';
 
-
 let DEFAULT_LANGUAGE;
 
 if (!process.env.DEFAULT_LANGUAGE){
@@ -50,14 +49,12 @@ app.get('/info', async (req, res) => {
 
   const info = queryResult.results.bindings[0];
 
-  res.set('cache-keys', JSON.stringify([{"name": "resource-labels", parameters:[]}]));
-  if (!info) {
-    return res.status(200).json({ data: null });
-  } else {
-    const label = info.label ? info.label.value : '';
-    const comment = info.comment ? info.comment.value : '';
-    const jsonApiResponse = generateJsonApiResponse(term, label, comment);
+  res.set('cache-keys', JSON.stringify([{ name: 'resource-labels', parameters: [] }]));
+  if (info) {
+    const jsonApiResponse = generateJsonApiResponse(term, info.label?.value, info.comment?.value);
     return res.status(200).json(jsonApiResponse);
+  } else {
+    return res.status(200).json({ data: null });
   }
 
 });
@@ -65,7 +62,7 @@ app.get('/info', async (req, res) => {
 function generateJsonApiResponse(term, label, comment) {
   return {
     data: {
-      type: "uri",
+      type: 'uri',
       id: term,
       attributes: {
         label,
