@@ -3,17 +3,21 @@ import { app, errorHandler, sparqlEscapeUri, sparqlEscapeString, query, uuid } f
 
 let DEFAULT_LANGUAGE;
 
-// If no default language is provided, nl will be used as default if not specified in query.
-if(!process.env.DEFAULT_LANGUAGE){
+if (!process.env.DEFAULT_LANGUAGE){
+  // Fallback to nl as default language if language is not specified in query.
   DEFAULT_LANGUAGE = 'nl';
+} else if (process.env.DEFAULT_LANGUAGE != 'nil'){
+  // Set configured language as default if language is not specified in query.
+  DEFAULT_LANGUAGE = process.env.DEFAULT_LANGUAGE;
+} else { // language == 'nil'
+  // Disable filter on language
+  DEFAULT_LANGUAGE = null;
 }
-// The language is specicified, we will use the latter as default if not specified in query.
-else if(!process.env.DEFAULT_LANGUGAGE == 'nil'){
-  DEFAULT_LANGUAGE = DEFAULT_LANGUAGE;
-}
-//else The language is nil, we don't filter on language.
 
-console.log(`The default language will be ${DEFAULT_LANGUAGE}`);
+if (DEFAULT_LANGUAGE)
+  console.log(`The default language will be ${DEFAULT_LANGUAGE}`);
+else
+  console.log('Filter on language is disabled');
 
 app.get('/info', async (req, res) => {
   const {term, language = DEFAULT_LANGUAGE } = req.query;
@@ -28,8 +32,8 @@ app.get('/info', async (req, res) => {
     return res.status(400).json(jsonApiError);
   }
 
-  let languageFilterLabel = language ? `FILTER (lang(?label) = ${sparqlEscapeString(language)})` : '';
-  let languageFilterComment = language ? `FILTER (lang(?comment) = ${sparqlEscapeString(language)})` : '';
+  const languageFilterLabel = language ? `FILTER (lang(?label) = ${sparqlEscapeString(language)})` : '';
+  const languageFilterComment = language ? `FILTER (lang(?comment) = ${sparqlEscapeString(language)})` : '';
 
   const queryResult = await query(`
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
